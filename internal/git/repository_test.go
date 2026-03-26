@@ -48,6 +48,17 @@ func TestRepositoryFileCreationNotFound(t *testing.T) {
 	}
 }
 
+func TestRepositoryFileCommitCount(t *testing.T) {
+	sut := NewExecGitRepository(tempPath)
+	count, err := sut.FileCommitCount("file")
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+	if count != 1 {
+		t.Fatalf("Expected commit count to be 1, got %d", count)
+	}
+}
+
 func setup() (string, func(), error) {
 	path, err := os.MkdirTemp("", "git-ldm-test")
 	log.Println("Created path in", path)

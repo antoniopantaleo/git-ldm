@@ -7,3 +7,5 @@ type FileCreation struct {
 	Author    string
 	CreatedAt time.Time
 }
+
+type FileCommitCount int

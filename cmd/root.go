@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"os"
+	"sync"
 
+	"github.com/antoniopantaleo/git-ldm/internal/domain"
 	"github.com/antoniopantaleo/git-ldm/internal/git"
 	"github.com/antoniopantaleo/git-ldm/internal/presenter"
 	"github.com/antoniopantaleo/git-ldm/internal/usecase"
@@ -20,14 +22,37 @@ func NewRootCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			var wg sync.WaitGroup
+			wg.Add(2)
 			repo := git.NewExecGitRepository(cwd)
-			usecase := usecase.NewFileCreationUseCase(repo)
-			fileCreation, err := usecase.Execute(filePath)
-			if err != nil {
-				return err
+			var (
+				fc *domain.FileCreation
+				fcErr error
+				fcc domain.FileCommitCount
+				fccErr error
+			)
+			go func() {
+				defer wg.Done()
+				usecase := usecase.NewFileCreationUseCase(repo)
+				fc, fcErr = usecase.Execute(filePath)
+				
+			}()
+			go func() {
+				defer wg.Done()
+				usecase := usecase.NewFileCommitCountUseCase(repo)
+				fcc, fccErr = usecase.Execute(filePath)
+				
+			}()
+			wg.Wait()
+			if fcErr != nil {
+				return fcErr
+			}
+			if fccErr != nil {
+				return fccErr
 			}
 			presenter := presenter.NewTermenvPresenter()
-			presenter.PresentFileCreation(fileCreation)
+			presenter.PresentFileCreation(fc)
+			presenter.PresentFileCommitCount(fcc)
 			return nil
 		},
 	}

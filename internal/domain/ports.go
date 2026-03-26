@@ -1,9 +1,13 @@
 package domain
 
-type GitRepository interface {
+type FileCreationRepository interface {
 	FileCreation(path string) (*FileCreation, error)
 }
+type FileCommitCountRepository interface {
+	FileCommitCount(path string) (FileCommitCount, error)
+}
 
-type Presneter interface {
+type Presenter interface {
 	PresentFileCreation(fc *FileCreation)
+	PresentFileCommitCount(fcc FileCommitCount)
 }

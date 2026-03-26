@@ -7,10 +7,10 @@ import (
 )
 
 type FileCreationUseCase struct {
-	repo domain.GitRepository
+	repo domain.FileCreationRepository
 }
 
-func NewFileCreationUseCase(repo domain.GitRepository) *FileCreationUseCase {
+func NewFileCreationUseCase(repo domain.FileCreationRepository) *FileCreationUseCase {
 	return &FileCreationUseCase{repo: repo}
 }
 

@@ -31,3 +31,12 @@ func (p *TermenvPresenter) PresentFileCreation(fc *domain.FileCreation) {
 	fmt.Printf("%s  %s\n", authorLabel, author)
 	fmt.Printf("%s %s\n", dateLabel, date)
 }
+
+func (p *TermenvPresenter) PresentFileCommitCount(fcc domain.FileCommitCount) {
+	o := termenv.NewOutput(os.Stdout)
+
+	label := o.String("🔢 Number of commits").Bold()
+	count := o.String(fmt.Sprintf("%d", fcc)).Foreground(o.Color("#F38BA8"))
+
+	fmt.Printf("%s: %s\n", label, count)
+}

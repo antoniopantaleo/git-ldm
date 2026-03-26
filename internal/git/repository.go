@@ -3,6 +3,7 @@ package git
 import (
 	"errors"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 
@@ -45,4 +46,19 @@ func (r *ExecGitRepository) FileCreation(path string) (*domain.FileCreation, err
 		CreatedAt: createdAt,
 	}
 	return fileCreation, nil
+}
+
+func (r *ExecGitRepository) FileCommitCount(path string) (domain.FileCommitCount, error) {
+	cmd := exec.Command("git", "rev-list", "--count", "HEAD", "--", path)
+	cmd.Dir = r.path
+	output, err := cmd.Output()
+	if err != nil {
+		return 0, err
+	}
+	res := strings.TrimSpace(string(output))
+	count, err := strconv.Atoi(res)
+	if err != nil {
+		return 0, errors.New("failed to parse commit count")
+	}
+	return domain.FileCommitCount(count), nil
 }

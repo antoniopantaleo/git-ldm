@@ -8,19 +8,19 @@ import (
 	"github.com/antoniopantaleo/git-ldm/internal/domain"
 )
 
-type mock struct {
+type fileCreationRepoMock struct {
 	fileCreation *domain.FileCreation
 	err          error
 }
 
-func (m *mock) FileCreation(path string) (*domain.FileCreation, error) {
+func (m *fileCreationRepoMock) FileCreation(path string) (*domain.FileCreation, error) {
 	return m.fileCreation, m.err
 }
 
 func TestFileCreationUseCaseHappyPath(t *testing.T) {
 	now := time.Now()
 	sut := NewFileCreationUseCase(
-		&mock{
+		&fileCreationRepoMock{
 			fileCreation: &domain.FileCreation{
 				Path:      "any/path",
 				Author:    "any author",
@@ -45,7 +45,7 @@ func TestFileCreationUseCaseHappyPath(t *testing.T) {
 
 func TestFileCreationUseCaseEmptyPath(t *testing.T) {
 	sut := NewFileCreationUseCase(
-		&mock{},
+		&fileCreationRepoMock{},
 	)
 	_, err := sut.Execute("")
 	if err == nil {
@@ -55,7 +55,7 @@ func TestFileCreationUseCaseEmptyPath(t *testing.T) {
 
 func TestFileCreationUseCaseRepoError(t *testing.T) {
 	sut := NewFileCreationUseCase(
-		&mock{
+		&fileCreationRepoMock{
 			err: errors.New("any error"),
 		},
 	)
