@@ -13,8 +13,9 @@ import (
 
 func NewRootCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "ldm",
-		Short: "ldm is a git extension for files history explorations",
+		Use:   "git-ldm",
+		Version: "0.1.0-beta",
+		Short: "git-ldm is a git extension for files history explorations",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cwd, err := os.Getwd()
