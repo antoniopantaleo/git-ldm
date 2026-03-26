@@ -18,6 +18,7 @@ func NewRootCmd() *cobra.Command {
 		Short: "git-ldm is a git extension for files history explorations",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
 			cwd, err := os.Getwd()
 			filePath := args[0]
 			if err != nil {
@@ -25,7 +26,7 @@ func NewRootCmd() *cobra.Command {
 			}
 			var wg sync.WaitGroup
 			wg.Add(2)
-			repo := git.NewExecGitRepository(cwd)
+			repo := git.NewExecGitRepository(&ctx, cwd)
 			var (
 				fc *domain.FileCreation
 				fcErr error

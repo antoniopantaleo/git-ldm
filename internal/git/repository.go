@@ -1,6 +1,7 @@
 package git
 
 import (
+	"context"
 	"errors"
 	"os/exec"
 	"strconv"
@@ -11,16 +12,17 @@ import (
 )
 
 type ExecGitRepository struct {
+	ctx *context.Context
 	// The path of the git repository to execute the commands in
 	path string
 }
 
-func NewExecGitRepository(path string) *ExecGitRepository {
-	return &ExecGitRepository{path: path}
+func NewExecGitRepository(ctx *context.Context, path string) *ExecGitRepository {
+	return &ExecGitRepository{ctx: ctx, path: path}
 }
 
 func (r *ExecGitRepository) FileCreation(path string) (*domain.FileCreation, error) {
-	cmd := exec.Command("git", "log", "--diff-filter=A", "--format=%an|%aI", "--", path)
+	cmd := exec.CommandContext(*r.ctx, "git", "log", "--diff-filter=A", "--format=%an|%aI", "--", path)
 	cmd.Dir = r.path
 	output, err := cmd.Output()
 	if err != nil {
@@ -49,7 +51,7 @@ func (r *ExecGitRepository) FileCreation(path string) (*domain.FileCreation, err
 }
 
 func (r *ExecGitRepository) FileCommitCount(path string) (domain.FileCommitCount, error) {
-	cmd := exec.Command("git", "rev-list", "--count", "HEAD", "--", path)
+	cmd := exec.CommandContext(*r.ctx, "git", "rev-list", "--count", "HEAD", "--", path)
 	cmd.Dir = r.path
 	output, err := cmd.Output()
 	if err != nil {

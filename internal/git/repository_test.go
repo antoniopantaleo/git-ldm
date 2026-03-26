@@ -1,6 +1,7 @@
 package git
 
 import (
+	"context"
 	"log"
 	"os"
 	"os/exec"
@@ -21,7 +22,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestRepositoryFileCreation(t *testing.T) {
-	sut := NewExecGitRepository(tempPath)
+	ctx := context.Background()
+	sut := NewExecGitRepository(&ctx, tempPath)
 	fileCreation, err := sut.FileCreation("file")
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
@@ -41,7 +43,8 @@ func TestRepositoryFileCreation(t *testing.T) {
 }
 
 func TestRepositoryFileCreationNotFound(t *testing.T) {
-	sut := NewExecGitRepository(tempPath)
+	ctx := context.Background()
+	sut := NewExecGitRepository(&ctx, tempPath)
 	_, err := sut.FileCreation("non-existent-file")
 	if err == nil {
 		t.Fatalf("Expected error, got nil")
@@ -49,7 +52,8 @@ func TestRepositoryFileCreationNotFound(t *testing.T) {
 }
 
 func TestRepositoryFileCommitCount(t *testing.T) {
-	sut := NewExecGitRepository(tempPath)
+	ctx := context.Background()
+	sut := NewExecGitRepository(&ctx, tempPath)
 	count, err := sut.FileCommitCount("file")
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
